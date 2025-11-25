@@ -37,7 +37,11 @@
     "src/admin/",
     // Do not include test files
     "**/*.test.*",
+    "**/*.spec.*",
+    "tests/",
     // Do not include plugins in the server compilation
-    "src/plugins/**"
+    "src/plugins/**",
+    // Do not include Playwright config
+    "playwright.config.*"
   ]
 }
