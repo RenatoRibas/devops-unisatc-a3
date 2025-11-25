@@ -30,3 +30,5 @@ jobs:
 
       - name: Rodar testes E2E
         run: pnpm test:e2e
+
+      - run: pnpm build
