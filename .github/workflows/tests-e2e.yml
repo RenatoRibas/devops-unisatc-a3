@@ -1,4 +1,4 @@
-name: E2E Tests (Playwright)
+name: e2e-teste-passou
 
 on:
   pull_request:
