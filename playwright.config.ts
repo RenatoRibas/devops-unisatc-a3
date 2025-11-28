@@ -1,16 +1,24 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const DEFAULT_BASE_URL = 'http://localhost:1337';
+const baseURL = process.env.STRAPI_URL || DEFAULT_BASE_URL;
+const adminUrl = `${baseURL.replace(/\/$/, '')}/admin`;
+
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: 'html',
+  timeout: 60_000,
+  globalSetup: './tests/e2e/global-setup.ts',
   use: {
-    baseURL: process.env.STRAPI_URL || 'http://localhost:1337',
+    baseURL,
+    storageState: 'storageState.json',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    actionTimeout: 15_000,
   },
   projects: [
     {
@@ -18,14 +26,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // webServer desabilitado - rode o Strapi manualmente com: pnpm dev
-  // Descomente as linhas abaixo se quiser que o Playwright inicie o Strapi automaticamente
-  // webServer: {
-  //   command: 'pnpm dev',
-  //   url: 'http://localhost:1337/admin',
-  //   reuseExistingServer: true,
-  //   timeout: 180 * 1000,
-  //   stdout: 'ignore',
-  //   stderr: 'pipe',
-  // },
+  webServer: process.env.CI
+    ? {
+        command: 'pnpm start',
+        url: adminUrl,
+        reuseExistingServer: true,
+        timeout: 180_000,
+      }
+    : undefined,
 });

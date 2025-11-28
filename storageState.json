@@ -1,0 +1,25 @@
+{
+  "cookies": [
+    {
+      "name": "jwtToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0Mjk0MDgxLCJleHAiOjE3NjY4ODYwODF9.Fo5QYiuDO1KTGPNhkKKonenInyoelukg97EDMFtoaqg",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:1337",
+      "localStorage": [
+        {
+          "name": "isLoggedIn",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}
