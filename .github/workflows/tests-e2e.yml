@@ -35,6 +35,12 @@ jobs:
       - name: Build Strapi
         run: pnpm build
 
+      - name: Start Strapi in background
+        run: pnpm start &
+      
+      - name: Wait for Strapi to be ready
+        run: npx wait-on http://localhost:1337
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
