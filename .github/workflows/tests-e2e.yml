@@ -39,16 +39,6 @@ jobs:
       - name: Build Strapi
         run: pnpm build
 
-      - name: Start Strapi in background
-        run: |
-          pnpm start &
-          STRAPI_PID=$!
-          echo "Strapi PID: $STRAPI_PID"
-          echo $STRAPI_PID > strapi.pid
-      
-      - name: Wait for Strapi to be ready
-        run: npx wait-on http://localhost:1337
-
       - name: Install Playwright browsers
         uses: microsoft/playwright-github-action@v1
         with:
@@ -56,10 +46,8 @@ jobs:
 
       - name: Run Playwright tests
         run: |
+          pnpm start &
+          STRAPI_PID=$!
+          trap "kill $STRAPI_PID" EXIT
+          timeout 300 npx wait-on http://localhost:1337
           pnpm run test:e2e
-      - name: Stop Strapi
-        if: always()
-        run: |
-          if [ -f strapi.pid ]; then
-            kill $(cat strapi.pid) || true
-          fi
