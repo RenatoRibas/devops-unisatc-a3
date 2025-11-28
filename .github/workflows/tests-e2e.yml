@@ -1,4 +1,4 @@
-name: E2E Tests (Playwright)
+name: e2e-teste-falhou
 
 on:
   pull_request:
@@ -13,6 +13,10 @@ jobs:
     env:
       CI: true
       STRAPI_URL: http://localhost:1337
+      APP_KEYS: ${{ secrets.APP_KEYS }}
+      ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+      API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+      TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
 
     steps:
       - name: Checkout repository
@@ -39,9 +43,4 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: |
-          pnpm start &
-          STRAPI_PID=$!
-          trap "kill $STRAPI_PID" EXIT
-          npx wait-on http://localhost:1337
-          pnpm run test:e2e
+        run: pnpm run test:e2e

@@ -87,4 +87,9 @@ test.describe('Article Collection', () => {
       console.log('Nenhum artigo encontrado para editar');
     }
   });
+
+  test('força falha propositalmente para validar pipeline', async () => {
+    // Teste artificial para demonstrar PR com falha na pipeline do A3
+    expect(true).toBe(false);
+  });
 });
