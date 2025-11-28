@@ -40,7 +40,11 @@ jobs:
         run: pnpm build
 
       - name: Start Strapi in background
-        run: pnpm start &
+        run: |
+          pnpm start &
+          STRAPI_PID=$!
+          echo "Strapi PID: $STRAPI_PID"
+          echo $STRAPI_PID > strapi.pid
       
       - name: Wait for Strapi to be ready
         run: npx wait-on http://localhost:1337
@@ -51,4 +55,11 @@ jobs:
           with-deps: true
 
       - name: Run Playwright tests
-        run: pnpm run test:e2e
+        run: |
+          pnpm run test:e2e
+      - name: Stop Strapi
+        if: always()
+        run: |
+          if [ -f strapi.pid ]; then
+            kill $(cat strapi.pid) || true
+          fi
