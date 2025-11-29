@@ -2,6 +2,16 @@ name: deploy-terraform
 
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Terraform action to run"
+        required: false
+        default: "plan"
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
   push:
     branches:
       - main
@@ -52,9 +62,17 @@ jobs:
       - name: Terraform plan
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform plan -input=false
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.action == 'plan'
 
       - name: Terraform apply
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: |
+          github.event_name == 'push' && github.ref == 'refs/heads/main' ||
+          github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply'
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform apply -auto-approve -input=false
+
+      - name: Terraform destroy
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform destroy -auto-approve -input=false
 
